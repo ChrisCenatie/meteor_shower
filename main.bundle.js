@@ -80,6 +80,8 @@
 
 	    context.fillStyle = "green";
 	    context.fillText("Play Again?", 105, 320);
+	    context.font = "30px Verdana";
+	    context.fillText("Click Here", 145, 360);
 
 	    restartOption();
 	  }
