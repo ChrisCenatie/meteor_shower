@@ -41,6 +41,11 @@ describe('Bullet', function() {
       let bullet = new Bullet(this.board);
       assert.include(this.board.bullets, bullet);
     });
+
+    it('should have an image', function() {
+      let bullet = new Bullet(this.board);
+      assert.equal('ruby.png', bullet.image.src.split('/')[5]);
+    });
   });
 
   describe('movement', function() {
