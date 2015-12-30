@@ -53,6 +53,15 @@ describe('Meteor', function() {
     it('should be included in the board\'s array of this.meteor objects', function() {
       assert.include(this.board.meteors, this.meteor);
     });
+
+    it('should have an image', function() {
+      var meteorImages = [
+        'allison.png', 'carmer.png', 'dao.png', 'horace.png', 'jeff.png',
+        'joanne.png', 'jorge.png', 'josh.png', 'lovisa.png', 'marissa.png',
+        'meeka.png', 'mejia.png', 'rachel.png', 'steve.png', 'tess.png'
+      ]
+      assert.include(meteorImages, this.meteor.image.src.split('/')[5]);
+    });
   });
 
   describe('movement', function() {
