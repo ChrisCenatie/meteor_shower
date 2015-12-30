@@ -120,7 +120,7 @@
 	'use strict';
 
 	var Board = __webpack_require__(2);
-	var Score = __webpack_require__(10);
+	var Score = __webpack_require__(11);
 
 	var Runner = function Runner(canvas, context, gameSize) {
 	  this.canvas = canvas;
@@ -135,29 +135,6 @@
 	    startGame: ['./sounds/cheek.wav', './sounds/horace.wav']
 	  };
 	};
-
-	var staffMeteors = ['allison.png', 'carmer.png', 'dao.png', 'horace.png', 'jeff.png', 'joanne.png', 'jorge.png', 'josh.png', 'lovisa.png', 'marissa.png', 'meeka.png', 'mejia.png', 'rachel.png', 'steve.png', 'tess.png'];
-
-	//Meteors
-	var meteorImage = new Image();
-	var meteorSrc = _.sample(staffMeteors);
-	meteorImage.src = './images/staff/' + meteorSrc;
-
-	window.setInterval(function () {
-	  var meteorSrc = _.sample(staffMeteors);
-	  meteorImage.src = './images/staff/' + meteorSrc;
-	}, 10000);
-
-	//Player
-	var studentPlayers = ['alon.png', 'bret.png', 'chris.png', 'george.png', 'hecker.png', 'holzmann.png', 'jeff.png', 'matt.png', 'mb.png', 'mimi.png', 'rose.png', 'russell.png', 'ryan.png', 'travis.png'];
-
-	var playerImage = new Image();
-	var playerSrc = _.sample(studentPlayers);
-	playerImage.src = './images/students/' + playerSrc;
-
-	//Bullet
-	var bulletImage = new Image();
-	bulletImage.src = './images/bullet/ruby.png';
 
 	Runner.prototype.addPlayer = function () {
 	  this.board.addPlayer();
@@ -212,13 +189,7 @@
 	  context.clearRect(0, 0, gameSize.x, gameSize.y);
 	  var objects = board.joinObjects();
 	  for (var i = 0; i < objects.length; i++) {
-	    if (objects[i].constructor.name === 'Meteor') {
-	      drawObject(meteorImage, context, objects[i]);
-	    } else if (objects[i].constructor.name === 'Player') {
-	      drawObject(playerImage, context, objects[i]);
-	    } else {
-	      drawObject(bulletImage, context, objects[i]);
-	    }
+	    drawObject(objects[i].image, context, objects[i]);
 	  }
 	};
 
@@ -260,8 +231,8 @@
 	var _ = __webpack_require__(3);
 	var checkForCollision = __webpack_require__(5);
 	var Player = __webpack_require__(6);
-	var Meteor = __webpack_require__(8);
-	var Bullet = __webpack_require__(9);
+	var Meteor = __webpack_require__(9);
+	var Bullet = __webpack_require__(10);
 
 	function Board(width, height) {
 	  this.width = width || 1250;
@@ -12747,6 +12718,7 @@
 	'use strict';
 
 	var Keyboarder = __webpack_require__(7);
+	var addImage = __webpack_require__(8);
 
 	function Player(board) {
 	  this.board = board;
@@ -12757,6 +12729,7 @@
 	  this.rateOfFireCounter = 0;
 	  this.rateOfFireValue = 15;
 	  this.active = true;
+	  this.image = addImage('player');
 	  this.board.players.push(this);
 	}
 
@@ -12833,49 +12806,81 @@
 
 /***/ },
 /* 8 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
+
+	var _ = __webpack_require__(3);
+
+	var meteorImages = ['allison.png', 'carmer.png', 'dao.png', 'horace.png', 'jeff.png', 'joanne.png', 'jorge.png', 'josh.png', 'lovisa.png', 'marissa.png', 'meeka.png', 'mejia.png', 'rachel.png', 'steve.png', 'tess.png'];
+
+	var playerImages = ['alon.png', 'bret.png', 'chris.png', 'george.png', 'hecker.png', 'holzmann.png', 'jeff.png', 'matt.png', 'mb.png', 'mimi.png', 'rose.png', 'russell.png', 'ryan.png', 'travis.png'];
+
+	function addImage(objectName) {
+	  var image = new Image();
+	  if (objectName === 'meteor') {
+	    image.src = './images/staff/' + _.sample(meteorImages);
+	  } else if (objectName === 'player') {
+	    image.src = './images/students/' + _.sample(playerImages);
+	  } else {
+	    image.src = './images/bullet/ruby.png';
+	  }
+	  return image;
+	}
+
+	module.exports = addImage;
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var addImage = __webpack_require__(8);
 
 	function Meteor(board, level, xDim, yDim) {
 	  this.board = board;
+	  this.size = this.dimensions(level, xDim, yDim);
+	  this.velocity = this.velocities(level);
 
 	  var randomXPosition = Math.floor(Math.random() * this.board.width);
 
+	  this.pointValue = Math.floor(-((this.size.width + this.size.height) / 2) + 66);
+	  this.center = { x: randomXPosition, y: 0 - this.size.height / 2 };
+	  this.active = true;
+	  this.board.meteors.push(this);
+	  this.image = addImage('meteor');
+	}
+
+	Meteor.prototype.dimensions = function (level, xDim, yDim) {
 	  var randomWidth = Math.floor(Math.random() * 40) + 25;
 	  var randomHeight = Math.floor(Math.random() * 40) + 25;
 	  var randomWidth2 = Math.floor(Math.random() * 25) + 20;
 	  var randomHeight2 = Math.floor(Math.random() * 25) + 20;
 	  var randomWidth3 = Math.floor(Math.random() * 10) + 15;
 	  var randomHeight3 = Math.floor(Math.random() * 10) + 15;
+	  if (level < 2) {
+	    return { width: xDim || randomWidth, height: yDim || randomHeight };
+	  } else if (level >= 2 && level < 4) {
+	    return { width: randomWidth2, height: randomHeight2 };
+	  } else {
+	    return { width: randomWidth3, height: randomHeight3 };
+	  }
+	};
 
+	Meteor.prototype.velocities = function (level) {
 	  var yVelocity = Math.floor(Math.random() * 3) + 1;
 	  var xVelocity = Math.floor(Math.random() * 3) - Math.floor(Math.random() * 3);
 	  var yVelocity2 = Math.floor(Math.random() * 3) + 2;
 	  var yVelocity3 = Math.floor(Math.random() * 3) + 4;
-
 	  if (level < 2) {
-	    this.size = { width: xDim || randomWidth, height: yDim || randomHeight };
+	    return { x: xVelocity, y: yVelocity };
 	  } else if (level < 4) {
-	    this.size = { width: randomWidth2, height: randomHeight2 };
+	    return { x: xVelocity, y: yVelocity2 };
 	  } else {
-	    this.size = { width: randomWidth3, height: randomHeight3 };
+	    return { x: xVelocity, y: yVelocity3 };
 	  }
-
-	  this.pointValue = Math.floor(-((this.size.width + this.size.height) / 2) + 66);
-	  this.center = { x: randomXPosition, y: 0 - this.size.height / 2 };
-
-	  if (level < 2) {
-	    this.velocity = { x: xVelocity, y: yVelocity };
-	  } else if (level < 4) {
-	    this.velocity = { x: xVelocity, y: yVelocity2 };
-	  } else {
-	    this.velocity = { x: xVelocity, y: yVelocity3 };
-	  }
-
-	  this.active = true;
-	  this.board.meteors.push(this);
-	}
+	};
 
 	Meteor.prototype.update = function () {
 	  this.center.y += this.velocity.y;
@@ -12885,10 +12890,12 @@
 	module.exports = Meteor;
 
 /***/ },
-/* 9 */
-/***/ function(module, exports) {
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
+
+	var addImage = __webpack_require__(8);
 
 	function Bullet(board) {
 	  this.board = board;
@@ -12899,6 +12906,7 @@
 	  this.size = { width: 10, height: 10 };
 	  this.velocity = { y: -6 };
 	  this.active = true;
+	  this.image = addImage();
 	  this.board.bullets.push(this);
 	}
 
@@ -12909,7 +12917,7 @@
 	module.exports = Bullet;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	"use strict";

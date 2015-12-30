@@ -35,5 +35,14 @@ describe('Player', function() {
     it('should be included in the board\'s array of players', function() {
       assert.include(this.board.players, this.player);
     });
+
+    it('should have an image', function() {
+      var playerImages = [
+        'alon.png', 'bret.png', 'chris.png', 'george.png', 'hecker.png',
+        'holzmann.png', 'jeff.png', 'matt.png', 'mb.png', 'mimi.png', 'rose.png',
+        'russell.png', 'ryan.png', 'travis.png'
+      ]
+      assert.include(playerImages, this.player.image.src.split('/')[5]);
+    });
   });
 });
