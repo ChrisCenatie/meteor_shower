@@ -55,3 +55,8 @@ canvas {
   text-align: center;
   padding-top: 50px;
 }
+
+#high-score{
+  color: green;
+  font-weight: 900;
+}
