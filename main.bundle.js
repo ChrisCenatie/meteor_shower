@@ -58,10 +58,10 @@
 	  startGameLoop();
 
 	  function startGameLoop() {
-	    context.font = "30px Verdana";
+	    context.font = "30px Papyrus";
 	    context.fillStyle = "red";
-	    context.fillText("Choose Your Favorite", 60, 50);
-	    context.fillText("1507 Turing Student!", 60, 90);
+	    context.fillText("Choose Your Favorite", 80, 50);
+	    context.fillText("1507 Turing Student!", 80, 90);
 	    context.fillText("Then Click Here,", 120, 320);
 	    context.fillText("To Begin Assessments :P", 60, 360);
 
@@ -97,13 +97,13 @@
 	  function gameOverLoop() {
 	    clearScreen();
 
-	    context.font = "40px Verdana";
+	    context.font = "40px Papyrus";
 	    context.fillStyle = "red";
 	    context.fillText("Game Over!", 105, 100);
 
 	    context.fillStyle = "green";
 	    context.fillText("Play Again?", 105, 320);
-	    context.font = "30px Verdana";
+	    context.font = "30px Papyrus";
 	    context.fillText("Click Here", 145, 360);
 
 	    restartOption();
@@ -132,8 +132,6 @@
 	      });
 	    });
 	  }
-
-	  // gameLoop();
 	});
 
 /***/ },
@@ -187,6 +185,7 @@
 	  document.getElementById('time').innerHTML = time.minutes + " mins, " + time.seconds + " secs";
 	  document.getElementById('meteors-destroyed').innerHTML = results.meteorsDestroyed;
 	  document.getElementById('score').innerHTML = results.totalScore;
+	  document.getElementById('high-score').innerHTML = this.score.highScore();
 	};
 
 	Runner.prototype.calculateTime = function () {
@@ -12954,7 +12953,7 @@
 /* 11 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	function Score(board) {
 	  this.board = board;
@@ -12993,6 +12992,28 @@
 	    meteorsDestroyed: this.board.meteorsDestroyed.length
 	  };
 	};
+
+	Score.prototype.highScore = function () {
+	  if (document.cookie !== "") {
+	    var currentHighScore = getHighScore();
+	    var currentScore = this.calculateScore();
+	    highScoreCheck(currentHighScore, currentScore);
+	  } else {
+	    document.cookie = 'highScore=0';
+	  }
+	  return getHighScore();
+	};
+
+	function getHighScore() {
+	  var parsed = document.cookie.split('=');
+	  return parseInt(parsed[1]);
+	}
+
+	function highScoreCheck(currentHighScore, currentScore) {
+	  if (currentHighScore < currentScore) {
+	    document.cookie = 'highScore=' + currentScore;
+	  }
+	}
 
 	module.exports = Score;
 

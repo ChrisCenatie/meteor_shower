@@ -12769,7 +12769,7 @@
 /* 11 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	function Score(board) {
 	  this.board = board;
@@ -12808,6 +12808,28 @@
 	    meteorsDestroyed: this.board.meteorsDestroyed.length
 	  };
 	};
+
+	Score.prototype.highScore = function () {
+	  if (document.cookie !== "") {
+	    var currentHighScore = getHighScore();
+	    var currentScore = this.calculateScore();
+	    highScoreCheck(currentHighScore, currentScore);
+	  } else {
+	    document.cookie = 'highScore=0';
+	  }
+	  return getHighScore();
+	};
+
+	function getHighScore() {
+	  var parsed = document.cookie.split('=');
+	  return parseInt(parsed[1]);
+	}
+
+	function highScoreCheck(currentHighScore, currentScore) {
+	  if (currentHighScore < currentScore) {
+	    document.cookie = 'highScore=' + currentScore;
+	  }
+	}
 
 	module.exports = Score;
 
