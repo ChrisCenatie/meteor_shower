@@ -175,8 +175,8 @@ describe('Board', function() {
 
       meteor2.center.x = 300;
       meteor2.center.y = 300;
-      bullet2.center.x = 310;
-      bullet2.center.y = 310;
+      bullet2.center.x = 300;
+      bullet2.center.y = 300;
 
       meteor3.center.x = 150;
       meteor3.center.y = 150;
